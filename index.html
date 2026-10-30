@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101827"><meta name="description" content="A personal CAT preparation tracker with adaptive targets, error tracking and revision.">
+<link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="styles.css">
+<title>CAT Coach</title>
+</head>
+<body>
+<header class="topbar"><div><div class="eyebrow">PERSONAL CAT PREPARATION SYSTEM</div><h1>CAT Coach</h1></div><button id="notifyBtn" class="iconbtn" aria-label="Enable notifications">♢</button></header>
+<nav class="tabs" aria-label="Main navigation"><button class="tab active" data-view="home">Overview</button><button class="tab" data-view="log">Log work</button><button class="tab" data-view="errors">Error bank</button><button class="tab" data-view="revision">Revision</button><button class="tab" data-view="settings">Settings</button></nav>
+<main id="app" class="wrap">
+<section id="view-home" class="view active">
+  <div class="hero"><div><div class="eyebrow" id="todayLabel">YOUR DAILY PLAN</div><h2 id="greeting">Make today's work count.</h2><p id="dailySummary">Targets adapt to the work you log.</p></div><div class="days"><strong id="daysLeft">30</strong><span>days to CAT*</span></div></div>
+  <div class="grid metrics"><article class="metric"><span>Study time today</span><strong id="hoursToday">0h 00m</strong></article><article class="metric"><span>Questions logged</span><strong id="questionsToday">0</strong></article><article class="metric"><span>Accuracy today</span><strong id="accuracyToday">—</strong></article><article class="metric"><span>Open revisions</span><strong id="dueCount">0</strong></article></div>
+  <section class="panel"><div class="sectionhead"><div><div class="eyebrow">ADAPTIVE PLAN</div><h3>Today's targets</h3></div><button class="textbtn" id="refreshPlan">Recalculate</button></div><div id="targets" class="targetlist"></div></section>
+  <section class="panel"><div class="sectionhead"><div><div class="eyebrow">QUICK REVISION</div><h3>Surprise question</h3></div><span class="tag">From your topics</span></div><div id="surprise" class="question"></div></section>
+  <section class="panel"><div class="sectionhead"><div><div class="eyebrow">RECENT ACTIVITY</div><h3>Latest entries</h3></div><button class="textbtn" data-go="log">Add entry</button></div><div id="recent" class="empty">No work logged yet.</div></section>
+  <p class="footnote">*Countdown uses 29 November 2026 as the target exam date. Update it in Settings if needed. Data is stored on this device.</p>
+</section>
+<section id="view-log" class="view">
+  <div class="pagehead"><div class="eyebrow">RECORD YOUR WORK</div><h2>Log performance</h2><p>Record practice, a sectional test or a full mock. Be accurate; the target engine uses these numbers.</p></div>
+  <form id="workForm" class="panel formgrid">
+    <label>Activity type<select id="activityType"><option value="practice">Practice session</option><option value="sectional">Sectional test</option><option value="mock">Full mock</option></select></label>
+    <label>Section<select id="section"><option>QA</option><option>DILR</option><option>VARC</option><option>All sections</option></select></label>
+    <label>Topic<input id="topic" placeholder="e.g. Percentages, tables, RC inference" required></label>
+    <div class="two"><label>Questions attempted<input id="attempted" type="number" min="0" value="10" required></label><label>Correct answers<input id="correct" type="number" min="0" value="6" required></label></div>
+    <div class="two"><label>Time spent (minutes)<input id="minutes" type="number" min="1" value="45" required></label><label>Score (optional)<input id="score" type="number" step="0.01" placeholder="e.g. 24"></label></div>
+    <label>What went wrong / notes<textarea id="notes" rows="3" placeholder="Concept gap, calculation error, poor selection..."></textarea></label>
+    <label>Attach screenshot (optional)<input id="screenshots" type="file" accept="image/*" multiple></label>
+    <button class="primary" type="submit">Save performance</button><p id="logMessage" class="formmsg" role="status"></p>
+  </form>
+  <section class="panel"><div class="eyebrow">FULL MOCK RECORD</div><h3>Mock scorecard</h3><p class="muted">For full mocks, use three separate section entries or select “All sections” and add your overall score. For section-level analysis, log each section separately.</p></section>
+</section>
+<section id="view-errors" class="view">
+  <div class="pagehead"><div class="eyebrow">LEARN FROM MISTAKES</div><h2>Error bank</h2><p>Log a specific error after reviewing a question. Repeated error types should change your next targets.</p></div>
+  <form id="errorForm" class="panel formgrid">
+    <label>Section<select id="errSection"><option>QA</option><option>DILR</option><option>VARC</option></select></label>
+    <label>Topic<input id="errTopic" placeholder="e.g. Ratio, arrangements, main idea" required></label>
+    <label>Error category<select id="errType"><option>Conceptual gap</option><option>Wrong approach</option><option>Calculation error</option><option>Misread question</option><option>Time management</option><option>Bad question selection</option><option>Guessing</option></select></label>
+    <label>Question / prompt<textarea id="errQuestion" rows="3" placeholder="Paste the question or describe it" required></textarea></label>
+    <div class="two"><label>Your answer<input id="errYour" placeholder="Your answer"></label><label>Correct answer<input id="errCorrect" placeholder="Correct answer"></label></div>
+    <label>Why did you make this error?<textarea id="errWhy" rows="2" placeholder="Your diagnosis"></textarea></label>
+    <label>Attach screenshot (optional)<input id="errImage" type="file" accept="image/*"></label>
+    <button class="primary" type="submit">Add to error bank</button><p id="errorMessage" class="formmsg" role="status"></p>
+  </form>
+  <div class="sectionhead"><h3>Recorded errors</h3><span id="errorCount" class="tag">0</span></div><div id="errorList" class="stack"></div>
+</section>
+<section id="view-revision" class="view">
+  <div class="pagehead"><div class="eyebrow">SPACED RETRIEVAL</div><h2>Revision queue</h2><p>Topics return after 1, 3, 7 and 14 days. Incorrect answers return sooner.</p></div>
+  <section class="panel"><div class="sectionhead"><h3>Due today</h3><span id="revisionCount" class="tag">0 due</span></div><div id="revisionList" class="stack empty">Nothing due. Log a topic to start its revision schedule.</div></section>
+  <section class="panel"><div class="sectionhead"><h3>Add a topic to revise</h3></div><form id="topicForm" class="formgrid"><label>Section<select id="revSection"><option>QA</option><option>DILR</option><option>VARC</option></select></label><label>Topic<input id="revTopic" required placeholder="e.g. Percentages"></label><button class="primary" type="submit">Schedule revision</button></form></section>
+  <section class="panel"><div class="sectionhead"><h3>Add your own revision question</h3><span class="tag">Question bank</span></div><form id="questionForm" class="formgrid"><label>Section<select id="qSection"><option>QA</option><option>DILR</option><option>VARC</option></select></label><label>Topic<input id="qTopic" required placeholder="e.g. Percentages"></label><label>Question<textarea id="qPrompt" rows="3" required placeholder="Enter a question you want to be tested on"></textarea></label><label>Answer<textarea id="qAnswer" rows="2" required placeholder="Correct answer"></textarea></label><label>Explanation<textarea id="qExplanation" rows="2" placeholder="Optional explanation"></textarea></label><button class="primary" type="submit">Save question</button><p id="questionMessage" class="formmsg" role="status"></p></form></section>
+</section>
+<section id="view-settings" class="view">
+  <div class="pagehead"><div class="eyebrow">CONFIGURATION</div><h2>Settings & data</h2><p>Set your available time, exam date and notification preferences.</p></div>
+  <form id="settingsForm" class="panel formgrid">
+    <label>Daily study target (hours)<input id="studyHours" type="number" min="1" max="16" value="6"></label>
+    <label>CAT exam date<input id="examDate" type="date" value="2026-11-29"></label>
+    <label>Daily target reminder time<input id="reminderTime" type="time" value="08:00"></label>
+    <label>Surprise question window<select id="surpriseWindow"><option value="09-21">9 AM – 9 PM</option><option value="10-20">10 AM – 8 PM</option><option value="12-20">12 PM – 8 PM</option></select></label>
+    <label class="check"><input id="enableSurprises" type="checkbox" checked> Enable surprise questions while app is open</label>
+    <button class="primary" type="submit">Save settings</button><p id="settingsMessage" class="formmsg" role="status"></p>
+  </form>
+  <section class="panel"><h3>Backup & restore</h3><p class="muted">Export your data regularly. Browser storage can be cleared by device cleanup or app-data removal.</p><div class="two"><button id="exportBtn" class="secondary">Export backup</button><label class="filebutton">Import backup<input id="importFile" type="file" accept="application/json"></label></div><button id="clearBtn" class="dangerbtn">Delete all local data</button></section>
+  <section class="panel"><h3>Notification limitations</h3><p class="muted">This first version can show notifications when the app is open and can request browser notification permission. Reliable notifications while fully closed require HTTPS hosting, a push subscription and a server-side scheduler. Android/browser battery controls can also delay delivery.</p></section>
+</section>
+</main>
+<div id="toast" class="toast" role="status"></div>
+<script src="app.js"></script>
+</body></html>
